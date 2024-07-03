@@ -1,7 +1,9 @@
-import { IndexedDbCryptoKeyPairStore as subject } from "./IndexedDbCryptoKeyPairStore";
+import { IndexedDbCryptoKeyPairStore } from "./IndexedDbCryptoKeyPairStore";
 
-describe("IndexedDBCryptoKeyPairStore", () => {
+describe("IndexedDbCryptoKeyPairStore", () => {
     let data: CryptoKeyPair;
+    const subject = new IndexedDbCryptoKeyPairStore();
+
     const createCryptoKeyPair = async () => {
         return await window.crypto.subtle.generateKey(
             {
@@ -28,7 +30,7 @@ describe("IndexedDBCryptoKeyPairStore", () => {
             try { await p; } catch {}
         });
 
-        it("should store a key in IndexedDB", async () => {
+        it("should store a key pair in IndexedDB", async () => {
             await subject.set("foo", data);
             const result = await subject.get("foo");
 
