@@ -3,7 +3,13 @@ module.exports = {
     entry: "./src/index.ts",
     output: {
         filename: "browser-crypto-secure-store.js",
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        clean: true,
+        library: {
+            name: 'BrowserCryptoSecureStore',
+            type: 'umd',
+            export: 'default'
+        },
     },
     resolve: {
         extensions: [".webpack.js", ".web.js", ".ts", ".js"]
