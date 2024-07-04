@@ -1,6 +1,11 @@
 import { SecureStore, type CryptoKeyPairOptions } from "./SecureStore";
 
 describe("SecureStore set", () => {
+
+    beforeEach(async () => {
+        jest.clearAllMocks();
+    });
+
     it("should generate and store a CryptoKeyPair", async () => {
         // Arrange
         const subject = new SecureStore();
@@ -39,7 +44,7 @@ describe("SecureStore set", () => {
         expect(key.publicKey.algorithm.name).toBe("RSA-OAEP");
     });
 
-    it("should take ttl as an arugment", async () => {
+    it("should take ttl as an argument", async () => {
         // Arrange
         const subject = new SecureStore();
         const storeSpy = jest.spyOn(subject.indexedEbCryptoKeyPairStore, "set");
@@ -53,6 +58,4 @@ describe("SecureStore set", () => {
         expect(key.privateKey instanceof CryptoKey).toBe(true);
         expect(storeSpy).toHaveBeenCalledWith("some key", key, 60);
     });
-
-
 });

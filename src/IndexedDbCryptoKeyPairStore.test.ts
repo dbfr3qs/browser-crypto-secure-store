@@ -1,4 +1,4 @@
-import { IndexedDbCryptoKeyPairStore, type CryptoStorageObject } from "./IndexedDbCryptoKeyPairStore";
+import { IndexedDbCryptoKeyPairStore } from "./IndexedDbCryptoKeyPairStore";
 
 describe("IndexedDbCryptoKeyPairStore", () => {
     let data: CryptoKeyPair | CryptoKey;
@@ -17,6 +17,7 @@ describe("IndexedDbCryptoKeyPairStore", () => {
 
     beforeEach(async () => {
         const data = await createCryptoKeyPair();
+        jest.clearAllMocks();
     });
 
     describe("set", () => {
@@ -35,6 +36,13 @@ describe("IndexedDbCryptoKeyPairStore", () => {
             const result = await subject.get("foo");
 
             expect(result).toEqual(data);
+        });
+
+        it("should set a ttl if provided", async () => {
+            const setTimeoutSpy = jest.spyOn(global, "setTimeout");
+            await subject.set("foo", data, 10);
+
+            expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 10);
         });
     });
 

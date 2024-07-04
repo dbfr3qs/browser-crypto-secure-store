@@ -1,12 +1,6 @@
-
-export type CryptoStorageObject = {
-    keyPair: CryptoKeyPair | CryptoKey;
-    ttl?: number;
-}
-
 export class IndexedDbCryptoKeyPairStore {
-    readonly _dbName: string = "oidc";
-    readonly _storeName: string = "dpop";
+    readonly _dbName: string = "secure";
+    readonly _storeName: string = "store";
 
     public constructor(dbName?: string, storeName?: string) {
         if (dbName) {
@@ -18,24 +12,23 @@ export class IndexedDbCryptoKeyPairStore {
     }
 
     public async set(key: string, value: CryptoKeyPair | CryptoKey, ttl?: number): Promise<void> {
-        const data: CryptoStorageObject = {
-            keyPair: value,
-            ttl: ttl
-        };
-
         const store = await this.createStore(this._dbName, this._storeName);
         await store("readwrite", (str: IDBObjectStore) => {
-            str.put(data, key);
+            str.put(value, key);
             return this.promisifyRequest(str.transaction);
         });
+
+        if (ttl) {
+            console.log("Writing key with ttl: ", ttl);
+            await this.setTtl(key, ttl);
+        }
     }
 
-    public async get(key: string): Promise<CryptoKeyPair | CryptoKey | undefined> {
+    public async get(key: string): Promise<CryptoKeyPair | CryptoKey> {
         const store = await this.createStore(this._dbName, this._storeName);
-        const data = await store("readonly", (str) => {
+        return await store("readonly", (str) => {
             return this.promisifyRequest(str.get(key));
-        }) as CryptoStorageObject;
-        return data?.keyPair;
+        }) as CryptoKeyPair | CryptoKey;
     }
 
     public async remove(key: string): Promise<CryptoKeyPair | CryptoKey> {
@@ -78,5 +71,12 @@ export class IndexedDbCryptoKeyPairStore {
             const store = tx.objectStore(storeName);
             return await callback(store);
         };
+    }
+
+    async setTtl(key: string, ttl: number): Promise<void> {
+        window.setTimeout(async () => {
+            const keys = await this.remove(key);
+            console.log("Removed key: ", keys);
+        }, ttl);
     }
 }

@@ -1,20 +1,14 @@
 'use client';
 import Image from "next/image";
-import { IndexedDbCryptoKeyPairStore } from "../../../../src";
+import { SecureStore } from "../../../../src";
 
 
 // After
 function CryptoStoreButtonComponent() {
   const handleClick = async () => {
-    const keyPair = await window.crypto.subtle.generateKey(
-        {
-          name: "ECDSA",
-          namedCurve: "P-256",
-        },
-        false,
-        ["sign", "verify"],
-    );
-    await IndexedDbCryptoKeyPairStore.set("Foo", keyPair);
+    const secureStore = new SecureStore();
+    await secureStore.setKey({ key: "key", ttl: 1000 });
+
     console.log('Button clicked');
   };
 
