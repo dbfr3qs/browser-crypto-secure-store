@@ -2,14 +2,15 @@
   "compilerOptions": {
     "target": "ES2021",
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "lib",
     "moduleResolution": "node",
     "module": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowJs": true
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": false,
   },
-  "files": [
-    "src/index.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "node_modules", "dist"]
 }
