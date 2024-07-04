@@ -6,6 +6,12 @@ export type CryptoKeyPairOptions = {
     keyUsages: KeyUsage[];
 };
 
+export type SetKeyOptions = {
+    key: string;
+    options?: CryptoKeyPairOptions;
+    ttl?: number;
+}
+
 export class SecureStore {
     indexedEbCryptoKeyPairStore: IndexedDbCryptoKeyPairStore;
 
@@ -13,15 +19,23 @@ export class SecureStore {
         this.indexedEbCryptoKeyPairStore = new IndexedDbCryptoKeyPairStore(dbName, storeName);
     }
 
-    public async setKey(key: string, options: CryptoKeyPairOptions = {
-        algorithm: {
-            name: "ECDSA",
-            namedCurve: "P-256",
-        },
-        extractable: false,
-        keyUsages: ["sign", "verify"],
-    }): Promise<CryptoKeyPair | CryptoKey> {
-        const { algorithm, extractable, keyUsages } = options;
+    public async setKey(args: SetKeyOptions): Promise<CryptoKeyPair | CryptoKey> {
+        const {
+            key,
+            options = {
+                algorithm: {
+                    name: "ECDSA",
+                    namedCurve: "P-256",
+                },
+                extractable: false,
+                keyUsages: ["sign", "verify"],
+            },
+            ttl} = args;
+
+        const {
+            algorithm,
+            extractable,
+            keyUsages } = options;
 
         let keyPair = await window.crypto.subtle.generateKey(
             algorithm,
@@ -30,7 +44,7 @@ export class SecureStore {
         );
 
         try {
-            await this.indexedEbCryptoKeyPairStore.set(key, keyPair);
+            await this.indexedEbCryptoKeyPairStore.set(key, keyPair, ttl);
             return keyPair;
         } catch (err) {
             throw new Error(`Error storing key pair: ${err}`);

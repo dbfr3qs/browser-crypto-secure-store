@@ -1,7 +1,7 @@
-import { IndexedDbCryptoKeyPairStore } from "./IndexedDbCryptoKeyPairStore";
+import { IndexedDbCryptoKeyPairStore, type CryptoStorageObject } from "./IndexedDbCryptoKeyPairStore";
 
 describe("IndexedDbCryptoKeyPairStore", () => {
-    let data: CryptoKeyPair;
+    let data: CryptoKeyPair | CryptoKey;
     const subject = new IndexedDbCryptoKeyPairStore();
 
     const createCryptoKeyPair = async () => {
@@ -16,7 +16,7 @@ describe("IndexedDbCryptoKeyPairStore", () => {
     };
 
     beforeEach(async () => {
-        data = await createCryptoKeyPair();
+        const data = await createCryptoKeyPair();
     });
 
     describe("set", () => {

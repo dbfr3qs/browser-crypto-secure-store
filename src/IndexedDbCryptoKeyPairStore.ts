@@ -1,3 +1,9 @@
+
+export type CryptoStorageObject = {
+    keyPair: CryptoKeyPair | CryptoKey;
+    ttl?: number;
+}
+
 export class IndexedDbCryptoKeyPairStore {
     readonly _dbName: string = "oidc";
     readonly _storeName: string = "dpop";
@@ -11,22 +17,28 @@ export class IndexedDbCryptoKeyPairStore {
         }
     }
 
-    public async set(key: string, value: CryptoKeyPair | CryptoKey): Promise<void> {
+    public async set(key: string, value: CryptoKeyPair | CryptoKey, ttl?: number): Promise<void> {
+        const data: CryptoStorageObject = {
+            keyPair: value,
+            ttl: ttl
+        };
+
         const store = await this.createStore(this._dbName, this._storeName);
         await store("readwrite", (str: IDBObjectStore) => {
-            str.put(value, key);
+            str.put(data, key);
             return this.promisifyRequest(str.transaction);
         });
     }
 
-    public async get(key: string): Promise<CryptoKeyPair> {
+    public async get(key: string): Promise<CryptoKeyPair | CryptoKey | undefined> {
         const store = await this.createStore(this._dbName, this._storeName);
-        return await store("readonly", (str) => {
+        const data = await store("readonly", (str) => {
             return this.promisifyRequest(str.get(key));
-        }) as CryptoKeyPair;
+        }) as CryptoStorageObject;
+        return data?.keyPair;
     }
 
-    public async remove(key: string): Promise<CryptoKeyPair> {
+    public async remove(key: string): Promise<CryptoKeyPair | CryptoKey> {
         const item = await this.get(key);
         const store = await this.createStore(this._dbName, this._storeName);
         await store("readwrite", (str) => {

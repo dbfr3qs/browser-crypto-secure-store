@@ -6,7 +6,7 @@ describe("SecureStore set", () => {
         const subject = new SecureStore();
 
         // Act
-        const key = await subject.setKey("some key") as CryptoKeyPair;
+        const key = await subject.setKey({ key: "some key" }) as CryptoKeyPair;
 
         // Assert
         expect(key).toBeDefined();
@@ -30,13 +30,28 @@ describe("SecureStore set", () => {
             keyUsages: ["encrypt", "decrypt"],
         };
 
-        const key = await subject.setKey("some key", cryptoKeyPairOptions) as CryptoKeyPair;
+        const key = await subject.setKey( { key: "some key", options: cryptoKeyPairOptions }) as CryptoKeyPair;
 
         // Assert
         expect(key).toBeDefined();
         expect(key.publicKey instanceof CryptoKey).toBe(true);
         expect(key.privateKey instanceof CryptoKey).toBe(true);
         expect(key.publicKey.algorithm.name).toBe("RSA-OAEP");
+    });
+
+    it("should take ttl as an arugment", async () => {
+        // Arrange
+        const subject = new SecureStore();
+        const storeSpy = jest.spyOn(subject.indexedEbCryptoKeyPairStore, "set");
+
+        // Act
+        const key = await subject.setKey({ key: "some key", ttl: 60 }) as CryptoKeyPair;
+
+        // Assert
+        expect(key).toBeDefined();
+        expect(key.publicKey instanceof CryptoKey).toBe(true);
+        expect(key.privateKey instanceof CryptoKey).toBe(true);
+        expect(storeSpy).toHaveBeenCalledWith("some key", key, 60);
     });
 
 
