@@ -7,7 +7,7 @@ import { SecureStore } from "../../../../src";
 function CryptoStoreButtonComponent() {
   const handleClick = async () => {
     const secureStore = new SecureStore();
-    await secureStore.setKey({ key: "key", ttl: 1000 });
+    await secureStore.setKey({ key: "key" });
 
     console.log('Button clicked');
   };
