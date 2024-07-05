@@ -1,18 +1,26 @@
 'use client';
 import Image from "next/image";
-import { SecureStore } from "../../../../src";
+import {MouseEventHandler, useEffect, useState} from "react";
 
 
 // After
 function CryptoStoreButtonComponent() {
-  const handleClick = async () => {
-    const secureStore = new SecureStore();
-    await secureStore.setKey({ key: "key" });
+  const [onClickHandler, setOnClickHandler] = useState<MouseEventHandler<HTMLButtonElement> | undefined>(undefined);
 
-    console.log('Button clicked');
-  };
+  useEffect(() => {
+    const handleClick = async () => {
+      const { SecureStore } = await import('browser-crypto-secure-store');
+      console.log(SecureStore)
+      const secureStore = new SecureStore();
+      await secureStore.setKey({ key: "key" });
 
-  return <button onClick={handleClick}>Click Me!</button>;
+      console.log('Button clicked');
+    };
+
+    setOnClickHandler(() => handleClick);
+  }, []);
+
+  return <button onClick={onClickHandler}>Click Me!</button>;
 }
 
 export default function Home() {

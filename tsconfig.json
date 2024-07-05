@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "allowJs": true,
     "declaration": true,
-    "emitDeclarationOnly": false,
+    "emitDeclarationOnly": false
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],
   "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "node_modules", "dist"]

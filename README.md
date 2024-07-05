@@ -2,11 +2,11 @@
 
 A tiny library with no dependencies that allows you to generate
 and store [CryptoKeyPairs](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKeyPair) without the private key material ever
-being exposed to the browser.
+being exposed directly to the browser.
 
-KeyPairs are generated and then stored as objects within IndexedDB with optional TTLs.
-
-
+KeyPairs are generated and then stored as objects within IndexedDB with optional TTLs. All this does is wrap the integration
+between the [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and IndexedDB to make it easier to
+store and retrieve keys non extractable keys. It also provides a ttl option to automatically remove keys after a certain amount of time.
 
 ## Usage
 
@@ -14,32 +14,48 @@ KeyPairs are generated and then stored as objects within IndexedDB with optional
 
 ```javascript
 
-import { create } from 'browser-crypto-secure-store';
+import { SecureStore } from 'browser-crypto-secure-store';
 
-// this creates and stores a RS256 keypair in indexedDB
-const keyPair = create(name);
+// Create a new instance of the SecureStore
+const secureStore = new SecureStore();
 
-// keyPair is an object where the private key has been marked as
-// non exportable. You can still use this object to sign data with
-// the private key, but the key material itself is not visible 
-// anywhere within the browser.
+// this creates and stores a non extractable keypair in indexedDB. RS256 is used by default 
+const keyPair = secureStore.setKey({ key: "key" } );
+
+// create a new keypair with a TTL of 1 hour
+const keyPair = secureStore.setKey({ ley: "key", ttl: 3600 * 1000});
+
+// create a new keypair with custom crypto configuration options
+const options = {
+    algorithm: {
+        name: "RSA-OAEP",
+        modulusLength: 2048,
+        publicExponent: new Uint8Array([1, 0, 1]),
+        hash: "SHA-256",
+    },
+    extractable: false,
+    keyUsages: ["encrypt", "decrypt"],
+}
+
+const keyPair = secureStore.setKey({ key: "key", options: options });
 
 // Retreive the keyPair object
-import { get } from 'browser-crypto-secure-store';
-const keyPair = await get(name);
+const keyPair = await secureStore.getKey("key");
+const message = "Hello, World!";
+const signature = await window.crypto.subtle.sign(
+    {
+        name: "ECDSA",
+        hash: { name: "SHA-256" },
+    },
+    privateKey,
+    new TextEncoder().encode(encodedToken),
+);
 
 // Same deal as above. The private key is not visible but the keyPair
 // object can still be used to sign data.
 
 // Remove the key from persistent storage
-import { remove } from 'browser-crypto-secure-store';
-await remove(name);
 
-// Options
-options = new CryptoStoreOptions() {
-    ttl: 3600, // time to live in seconds
-    algorithm: 'RS256' // algorithm to use;
-}
+await remove("key");
 
-await keyPair = create(name, options);
 ```
