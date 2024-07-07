@@ -37,7 +37,7 @@ export class SecureStore {
             extractable,
             keyUsages } = options;
 
-        let keyPair = await window.crypto.subtle.generateKey(
+        const keyPair = await window.crypto.subtle.generateKey(
             algorithm,
             extractable,
             keyUsages,
