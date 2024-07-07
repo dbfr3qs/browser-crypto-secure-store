@@ -1,4 +1,17 @@
-export class IndexedDbCryptoKeyPairStore {
+/**
+ * @beta
+ */
+export interface CryptoKeyPairStore {
+    set(key: string, value: CryptoKeyPair | CryptoKey): Promise<void>
+    get(key: string): Promise<CryptoKeyPair | CryptoKey>
+    remove(key: string): Promise<void>
+    getAllKeys(): Promise<string[]>
+}
+
+/**
+ * @beta
+ */
+export class IndexedDbCryptoKeyPairStore implements CryptoKeyPairStore {
     readonly _dbName: string = "secure";
     readonly _storeName: string = "store";
 
@@ -11,17 +24,12 @@ export class IndexedDbCryptoKeyPairStore {
         }
     }
 
-    public async set(key: string, value: CryptoKeyPair | CryptoKey, ttl?: number): Promise<void> {
+    public async set(key: string, value: CryptoKeyPair | CryptoKey): Promise<void> {
         const store = await this.createStore(this._dbName, this._storeName);
         await store("readwrite", (str: IDBObjectStore) => {
             str.put(value, key);
             return this.promisifyRequest(str.transaction);
         });
-
-        if (ttl) {
-            console.log("Writing key with ttl: ", ttl);
-            await this.setTtl(key, ttl);
-        }
     }
 
     public async get(key: string): Promise<CryptoKeyPair | CryptoKey> {
@@ -31,13 +39,11 @@ export class IndexedDbCryptoKeyPairStore {
         }) as CryptoKeyPair | CryptoKey;
     }
 
-    public async remove(key: string): Promise<CryptoKeyPair | CryptoKey> {
-        const item = await this.get(key);
+    public async remove(key: string): Promise<void> {
         const store = await this.createStore(this._dbName, this._storeName);
         await store("readwrite", (str) => {
             return this.promisifyRequest(str.delete(key));
         });
-        return item;
     }
 
     public async getAllKeys(): Promise<string[]> {
@@ -71,12 +77,5 @@ export class IndexedDbCryptoKeyPairStore {
             const store = tx.objectStore(storeName);
             return await callback(store);
         };
-    }
-
-    async setTtl(key: string, ttl: number): Promise<void> {
-        window.setTimeout(async () => {
-            const keys = await this.remove(key);
-            console.log("Removed key: ", keys);
-        }, ttl);
     }
 }

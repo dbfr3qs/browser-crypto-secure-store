@@ -37,13 +37,6 @@ describe("IndexedDbCryptoKeyPairStore", () => {
 
             expect(result).toEqual(data);
         });
-
-        it("should set a ttl if provided", async () => {
-            const setTimeoutSpy = jest.spyOn(global, "setTimeout");
-            await subject.set("foo", data, 10);
-
-            expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 10);
-        });
     });
 
     describe("remove", () => {

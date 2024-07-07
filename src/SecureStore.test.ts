@@ -47,8 +47,9 @@ describe("SecureStore set", () => {
     it("should take ttl as an argument", async () => {
         // Arrange
         const subject = new SecureStore();
-        const storeSpy = jest.spyOn(subject.indexedEbCryptoKeyPairStore, "set");
-
+        const storeSpy = jest.spyOn(subject.cryptoKeyPairStore, "set");
+        const setTimeoutSpy = jest.spyOn(global, "setTimeout");
+        const ttlSpy = jest.spyOn(subject, "setTtl");
         // Act
         const key = await subject.setKey({ key: "some key", ttl: 60 }) as CryptoKeyPair;
 
@@ -56,6 +57,7 @@ describe("SecureStore set", () => {
         expect(key).toBeDefined();
         expect(key.publicKey instanceof CryptoKey).toBe(true);
         expect(key.privateKey instanceof CryptoKey).toBe(true);
-        expect(storeSpy).toHaveBeenCalledWith("some key", key, 60);
+        expect(storeSpy).toHaveBeenCalledWith("some key", key);
+        expect(ttlSpy).toHaveBeenCalledWith("some key", 60)
     });
 });

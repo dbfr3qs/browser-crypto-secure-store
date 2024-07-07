@@ -53,6 +53,6 @@ const signature = await window.crypto.subtle.sign(
 
 // Remove the key from persistent storage
 
-await remove("key");
+await removeKey("key");
 
 ```

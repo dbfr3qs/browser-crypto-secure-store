@@ -1,6 +1,6 @@
 {
   "name": "browser-crypto-secure-store",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Securely store Crypto Keys in the browser",
   "author": "Chris Keogh",
   "license": "ISC",
@@ -19,8 +19,9 @@
     "test": "tsc && jest",
     "lint": "eslint",
     "build-ts": "tsc",
-    "build-types": "tsc --declaration --emitDeclarationOnly --declarationDir lib --rootDir src && api-extractor run",
-    "build": "node scripts/build.cjs && npm run build-types"
+    "build-types": "tsc --declaration --emitDeclarationOnly --declarationDir lib --rootDir src && api-extractor run && npm run copy-api-definition",
+    "build": "node scripts/build.cjs && npm run build-types",
+    "copy-api-definition": "cp ./temp/browser-crypto-secure-store.api.md ./dist"
   },
   "files": [
     "dist"
