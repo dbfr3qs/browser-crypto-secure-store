@@ -6,7 +6,7 @@ being exposed directly to the browser.
 
 KeyPairs are generated and then stored as objects within IndexedDB with optional TTLs. All this does is wrap the integration
 between the [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and IndexedDB to make it easier to
-store and retrieve keys non-extractable keys. It also provides a ttl option to automatically remove keys after a certain amount of time.
+store and retrieve non-extractable keys. It also provides a ttl option to automatically remove keys after a certain amount of time.
 
 ## Usage
 

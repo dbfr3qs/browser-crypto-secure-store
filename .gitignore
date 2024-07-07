@@ -5,3 +5,5 @@
 
 # JetBrains
 .idea
+
+*.tgz
