@@ -1,5 +1,7 @@
 # Store Crypto KeyPairs securely in the browser
 
+![Build and Test](https://github.com/dbfr3qs/browser-crypto-secure-store/actions/workflows/build.yml/badge.svg)
+
 A tiny library with no dependencies that allows you to generate
 and store [CryptoKeyPairs](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKeyPair) without the private key material ever
 being exposed directly to the browser.
