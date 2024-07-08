@@ -18,6 +18,10 @@ export type CryptoKeyPairOptions = {
  *
  * SetKeyOptions is an object containing arguments for the setKey method.
  *
+ * key - The name of the key to store.
+ * options - An object containing optional arguments for the CryptoKeyPair. See https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey.
+ * ttl - The time to live for the key in seconds.
+ *
  */
 export type SetKeyOptions = {
     key: string;
@@ -45,48 +49,40 @@ export type SecureStoreOptions = {
  * By default it uses IndexedDb to store CryptoKeyPairs with non extractable private keys.
  */
 export class SecureStore {
-    cryptoKeyPairStore: CryptoKeyPairStore;
+    private cryptoKeyPairStore: CryptoKeyPairStore;
 
     /**
      * Creates a new instance of SecureStore using indexedDb as the storage mechanism.
      *
      * @param args - An object containing optional arguments.
      */
-    public constructor(args: SecureStoreOptions = {}) {
-        const { cryptoKeyPairStore, dbName, storeName } = args;
-        if (cryptoKeyPairStore) {
-            this.cryptoKeyPairStore = cryptoKeyPairStore;
-        } else {
-            this.cryptoKeyPairStore = new IndexedDbCryptoKeyPairStore(dbName, storeName);
+    public constructor({
+            cryptoKeyPairStore,
+            dbName,
+            storeName,
+        }: SecureStoreOptions = {}) {
+            this.cryptoKeyPairStore = cryptoKeyPairStore || new IndexedDbCryptoKeyPairStore(dbName, storeName);
         }
-    }
 
     /**
      * Generates a new CryptoKeyPair and stores it in the SecureStore.
      *
      * @param args - A SeyKeyOptions object containing the key name and optional arguments.
-     * @param key - The name of the key to store.
-     * @param options - An object containing optional arguments for the CryptoKeyPair. See https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey.
-     * @param ttl - The time to live for the key in seconds.
      * @returns - A CryptoKeyPair or CryptoKey.
      */
-    public async setKey(args: SetKeyOptions): Promise<CryptoKeyPair | CryptoKey> {
-        const {
-            key,
-            options = {
-                algorithm: {
-                    name: "ECDSA",
-                    namedCurve: "P-256",
-                },
-                extractable: false,
-                keyUsages: ["sign", "verify"],
-            },
-            ttl} = args;
-
-        const {
-            algorithm,
-            extractable,
-            keyUsages } = options;
+    public async setKey({
+                            key,
+                            options = {
+                                algorithm: {
+                                    name: "ECDSA",
+                                    namedCurve: "P-256",
+                                } as EcKeyGenParams,
+                                extractable: false,
+                                keyUsages: ["sign", "verify"],
+                            } ,
+                            ttl,
+                        }: SetKeyOptions): Promise<CryptoKeyPair | CryptoKey> {
+        const { algorithm, extractable, keyUsages } = options;
 
         const keyPair = await window.crypto.subtle.generateKey(
             algorithm,
@@ -101,7 +97,7 @@ export class SecureStore {
             }
             return keyPair;
         } catch (err) {
-            throw new Error(`Error storing key pair: ${err}`);
+            throw new Error(`Error storing key pair: ${err.message}`);
         }
     }
 
@@ -110,7 +106,11 @@ export class SecureStore {
      * @param key - the name of the key to retrieve.
      */
     public async getKey(key: string): Promise<CryptoKeyPair> {
-        return await this.cryptoKeyPairStore.get(key) as CryptoKeyPair;
+        const keyPair = await this.cryptoKeyPairStore.get(key);
+        if (!keyPair) {
+            throw new Error(`Key not found: ${key}`);
+        }
+        return keyPair as CryptoKeyPair;
     }
 
     /**

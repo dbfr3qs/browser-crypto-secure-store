@@ -25,13 +25,11 @@ export interface CryptoKeyPairStore {
 
 // @beta
 export class SecureStore {
-    constructor(args?: SecureStoreOptions);
-    // (undocumented)
-    cryptoKeyPairStore: CryptoKeyPairStore;
+    constructor({ cryptoKeyPairStore, dbName, storeName, }?: SecureStoreOptions);
     getAllKeys(): Promise<string[]>;
     getKey(key: string): Promise<CryptoKeyPair>;
     removeKey(key: string): Promise<void>;
-    setKey(args: SetKeyOptions): Promise<CryptoKeyPair | CryptoKey>;
+    setKey({ key, options, ttl, }: SetKeyOptions): Promise<CryptoKeyPair | CryptoKey>;
     // (undocumented)
     setTtl(key: string, ttl: number): Promise<void>;
 }
