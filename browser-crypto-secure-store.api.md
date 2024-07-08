@@ -11,11 +11,21 @@ export type CryptoKeyPairOptions = {
     keyUsages: KeyUsage[];
 };
 
+// @beta (undocumented)
+export interface CryptoKeyPairStore {
+    // (undocumented)
+    get(key: string): Promise<CryptoKeyPair | CryptoKey>;
+    // (undocumented)
+    getAllKeys(): Promise<string[]>;
+    // (undocumented)
+    remove(key: string): Promise<void>;
+    // (undocumented)
+    set(key: string, value: CryptoKeyPair | CryptoKey): Promise<void>;
+}
+
 // @beta
 export class SecureStore {
     constructor(args?: SecureStoreOptions);
-    // Warning: (ae-forgotten-export) The symbol "CryptoKeyPairStore" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     cryptoKeyPairStore: CryptoKeyPairStore;
     getAllKeys(): Promise<string[]>;
