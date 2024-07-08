@@ -11,42 +11,11 @@ export type CryptoKeyPairOptions = {
     keyUsages: KeyUsage[];
 };
 
-// @beta (undocumented)
-export interface CryptoKeyPairStore {
-    // (undocumented)
-    get(key: string): Promise<CryptoKeyPair | CryptoKey>;
-    // (undocumented)
-    getAllKeys(): Promise<string[]>;
-    // (undocumented)
-    remove(key: string): Promise<void>;
-    // (undocumented)
-    set(key: string, value: CryptoKeyPair | CryptoKey): Promise<void>;
-}
-
-// @beta (undocumented)
-export class IndexedDbCryptoKeyPairStore implements CryptoKeyPairStore {
-    constructor(dbName?: string, storeName?: string);
-    // (undocumented)
-    createStore<T>(dbName: string, storeName: string): Promise<(txMode: IDBTransactionMode, callback: (store: IDBObjectStore) => T | PromiseLike<T>) => Promise<T>>;
-    // (undocumented)
-    readonly _dbName: string;
-    // (undocumented)
-    get(key: string): Promise<CryptoKeyPair | CryptoKey>;
-    // (undocumented)
-    getAllKeys(): Promise<string[]>;
-    // (undocumented)
-    promisifyRequest<T = undefined>(request: IDBRequest<T> | IDBTransaction): Promise<T>;
-    // (undocumented)
-    remove(key: string): Promise<void>;
-    // (undocumented)
-    set(key: string, value: CryptoKeyPair | CryptoKey): Promise<void>;
-    // (undocumented)
-    readonly _storeName: string;
-}
-
 // @beta
 export class SecureStore {
     constructor(args?: SecureStoreOptions);
+    // Warning: (ae-forgotten-export) The symbol "CryptoKeyPairStore" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     cryptoKeyPairStore: CryptoKeyPairStore;
     getAllKeys(): Promise<string[]>;
