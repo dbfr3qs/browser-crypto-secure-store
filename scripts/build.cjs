@@ -53,14 +53,14 @@ try {
     buildSync({
         ...opts,
         platform: "browser",
-        outfile: "dist/browser/browser-crypto-browser-crypto-secure-store.js",
+        outfile: "dist/browser/browser-crypto-secure-store.js",
         globalName: "securestore",
     });
     // browser-min (self contained)
     buildSync({
         ...opts,
         platform: "browser",
-        outfile: "dist/browser/secure-store.min.js",
+        outfile: "dist/browser/browser-crypto-secure-store.min.js",
         globalName: "securestore",
         minify: true,
     });
