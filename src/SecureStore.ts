@@ -96,7 +96,9 @@ export class SecureStore {
 
         try {
             await this.cryptoKeyPairStore.set(key, keyPair);
-            await this.setTtl(key, ttl);
+            if (ttl) {
+                await this.setTtl(key, ttl);
+            }
             return keyPair;
         } catch (err) {
             throw new Error(`Error storing key pair: ${err}`);
