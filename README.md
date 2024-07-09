@@ -2,13 +2,18 @@
 
 ![Build and Test](https://github.com/dbfr3qs/browser-crypto-secure-store/actions/workflows/build.yml/badge.svg)
 
-A tiny library with no dependencies that allows you to generate
-and store [CryptoKeyPairs](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKeyPair) without the private key material ever
+A tiny library with no third party dependencies other than browser APIs that allows generating
+and storing [CryptoKeyPairs](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKeyPair) without the private key material ever
 being exposed directly to the browser.
 
-KeyPairs are generated and then stored as objects within IndexedDB with optional TTLs. All this does is wrap the integration
-between the [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and IndexedDB to make it easier to
-store and retrieve non-extractable keys. It also provides a ttl option to automatically remove keys after a certain amount of time.
+Key pairs are generated and then stored as objects within IndexedDb with optional TTLs. 
+
+All this library does is wrap the integration between the [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and IndexedDb to make it easier to
+store and retrieve non-extractable key for signing/encryption in the browser. 
+
+It also provides a `ttl` option to automatically remove keys after a certain amount of time.
+
+Supports ESM, UMD and the browser directly.
 
 ## Usage
 
@@ -44,12 +49,14 @@ const keyPair = await secureStore.setKey({ key: "key", options: options });
 // Retreive the keyPair object
 const keyPair = await secureStore.getKey("key");
 const message = "Hello, World!";
+
+// sign the message with our new private key
 const signature = await window.crypto.subtle.sign(
     {
         name: "ECDSA",
         hash: { name: "SHA-256" },
     },
-    privateKey,
+    keyPair.privateKey,
     new TextEncoder().encode(message),
 );
 
