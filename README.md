@@ -9,7 +9,7 @@ being exposed directly to the browser.
 Key pairs are generated and then stored as objects within IndexedDb with optional TTLs. 
 
 All this library does is wrap the integration between the [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and IndexedDb to make it easier to
-store and retrieve non-extractable key for signing/encryption in the browser. 
+store and retrieve non-extractable keys for signing/encryption in the browser. 
 
 It also provides a `ttl` option to automatically remove keys after a certain amount of time.
 
