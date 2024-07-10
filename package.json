@@ -3,7 +3,7 @@
   "version": "0.1.5",
   "description": "Securely store Crypto Keys in the browser",
   "author": "Chris Keogh",
-  "license": "ISC",
+  "license": "MIT",
   "keywords": ["Crypto", "WebCrypto", "IndexedDB", "Secure", "Storage", "CryptoKeyPair", "Browser", "SubtleCrypto"],
   "main": "dist/umd/browser-crypto-secure-store.js",
   "types": "dist/types/browser-crypto-secure-store.d.ts",
