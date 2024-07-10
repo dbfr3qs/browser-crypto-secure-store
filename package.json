@@ -1,6 +1,6 @@
 {
   "name": "browser-crypto-secure-store",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Securely store Crypto Keys in the browser",
   "author": "Chris Keogh",
   "license": "MIT",

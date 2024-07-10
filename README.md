@@ -1,5 +1,6 @@
 # Store Crypto KeyPairs securely in the browser
 
+![GitHub Release](https://img.shields.io/github/v/release/dbfr3qs/browser-crypto-secure-store?label=latest%20release)
 ![Build and Test](https://github.com/dbfr3qs/browser-crypto-secure-store/actions/workflows/build.yml/badge.svg)
 
 A tiny library with no third party dependencies other than browser APIs that allows generating
