@@ -15,6 +15,8 @@ It also provides a `ttl` option to automatically remove keys after a certain amo
 
 Supports ESM, UMD and the browser directly.
 
+** PRs and contributions are welcome! **
+
 ## Usage
 
 ```npm install browser-crypto-secure-store```
